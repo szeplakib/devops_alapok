@@ -1,7 +1,7 @@
 import os
+from flask import Flask
 from flask_math.routes import routes
 
-from flask import Flask
 
 def create_app(test_config=None):
     # create and configure the app

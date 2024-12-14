@@ -9,5 +9,5 @@ services:
       - "8000:5000"
     volumes:
       - ./src:/app
-    #command: flask --app /app/flask_math run --debug --host=0.0.0.0
-    command: /bin/bash
+    command: flask --app /app/flask_math run --debug --host=0.0.0.0
+    # command: /bin/bash

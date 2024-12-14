@@ -11,4 +11,4 @@ def square(number):
         number = float(number)
     except ValueError:
         return f"Numbers are expected, you provided the following: {number}"
-    return "{:g}".format(number ** 2)
+    return f"{number ** 2:g}"
