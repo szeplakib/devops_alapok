@@ -1,0 +1,13 @@
+services:
+  flask_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    stdin_open: true
+    tty: true 
+    ports:
+      - "8000:5000"
+    volumes:
+      - ./src:/app
+    #command: flask --app /app/flask_math run --debug --host=0.0.0.0
+    command: /bin/bash
