@@ -28,9 +28,9 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Test main app with pytest
       run: |
-        cd flask_main
+        cd main_app
         python3 -m pytest
     - name: Test micro app with pytest
       run: |
-        cd flask_micro
+        cd micro_app
         python3 -m pytest
