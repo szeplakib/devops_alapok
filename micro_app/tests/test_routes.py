@@ -2,7 +2,7 @@ import os
 from flask_micro import create_app
 
 
-def complex():
+def test_complex():
     """
     GIVEN a Flask application configured for testing
     WHEN the '/complex' page is requested (GET)
@@ -20,7 +20,7 @@ def complex():
 
 
 
-def complex2():
+def test_complex2():
     """
     GIVEN a Flask application configured for testing
     WHEN the '/complex' page is requested (GET)
