@@ -1,11 +1,11 @@
 import os
-from flask_math import create_app
+from flask_micro import create_app
 
 
-def test_hello():
+def complex():
     """
     GIVEN a Flask application configured for testing
-    WHEN the '/hello' page is requested (GET)
+    WHEN the '/complex' page is requested (GET)
     THEN check that the response is valid
     """
     # Set the Testing configuration prior to creating the Flask application
@@ -14,16 +14,16 @@ def test_hello():
 
     # Create a test client using the Flask application configured for testing
     with flask_app.test_client() as test_client:
-        response = test_client.get('/hello')
+        response = test_client.get('/complex')
         assert response.status_code == 200
-        assert b"Hello" in response.data
+        assert b'This is the result of a computationally intensive task!' in response.data
 
 
 
-def test_square():
+def complex2():
     """
     GIVEN a Flask application configured for testing
-    WHEN the '/square' page is requested (GET)
+    WHEN the '/complex' page is requested (GET)
     THEN check that the response is valid
     """
     # Set the Testing configuration prior to creating the Flask application
@@ -32,12 +32,6 @@ def test_square():
 
     # Create a test client using the Flask application configured for testing
     with flask_app.test_client() as test_client:
-        response = test_client.get('/square/2')
+        response = test_client.get('/complex2')
         assert response.status_code == 200
-        assert b"4" == response.data
-        response = test_client.get('/square/2.2')
-        assert response.status_code == 200
-        assert b"4.84" == response.data
-        response = test_client.get('/square/asd')
-        assert response.status_code == 200
-        assert b"Numbers are expected, you provided the following: asd" == response.data
+        assert b'This is the result of another computationally intensive task!' in response.data

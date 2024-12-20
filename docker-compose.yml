@@ -1,13 +1,36 @@
 services:
-  flask_app:
+  flask_main:
     build:
       context: .
       dockerfile: Dockerfile
-    stdin_open: true
-    tty: true 
+    # stdin_open: true
+    # tty: true
+    networks:
+      local:
+        ipv4_address: 172.32.0.2
     ports:
       - "8000:5000"
     volumes:
-      - ./src:/app
-    command: flask --app /app/flask_math run --debug --host=0.0.0.0
-    # command: /bin/bash
+      - ./main_app:/app
+    command: flask --app /app/flask_main run --debug --host=0.0.0.0
+
+  flask_micro:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      local:
+        ipv4_address: 172.32.0.3
+    # stdin_open: true
+    # tty: true
+    volumes:
+      - ./micro_app:/app
+    command: flask --app /app/flask_micro run --host=172.32.0.3
+
+networks:
+  local:
+    name: local
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.32.0.0/16
