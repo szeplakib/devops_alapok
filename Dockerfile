@@ -6,5 +6,5 @@ RUN apk update && apk add bash
 RUN pip install --no-cache-dir -r requirements.txt
 
 RUN mkdir -p workspace
-RUN sudo chmod -R 777 workspace
+RUN chmod -R 777 workspace
 WORKDIR ~/workspace
