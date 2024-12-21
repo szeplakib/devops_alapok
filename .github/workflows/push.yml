@@ -3,7 +3,6 @@ name: Push to Artifact Registry
 on: [workflow_call]
 
 env:
-  IMAGE_NAME: 'docker-test'
   PROJECT_ID: 'devops-alapok'
   AR_REPO_LOCATION: 'europe-central2'
   AR_URL: 'europe-central2-docker.pkg.dev/devops-alapok/devops-alapok-repo'
@@ -38,6 +37,9 @@ jobs:
           password: '${{ steps.auth.outputs.access_token }}'
           registry: '${{ env.AR_REPO_LOCATION }}-docker.pkg.dev'
 
-      - name: Build and Push Images
+      - name: Build and Push Container
         run: |-
-          docker compose push
+          docker build -t "${{ env.AR_URL }}/flask_main:${{ github.sha }}" ./Dockerfile_main
+          docker build -t "${{ env.AR_URL }}/flask_micro:${{ github.sha }}" ./Dockerfile_micro
+          docker push "${{ env.AR_URL }}/flask_main:${{ github.sha }}"
+          docker push "${{ env.AR_URL }}/flask_micro:${{ github.sha }}"
