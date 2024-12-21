@@ -36,7 +36,7 @@ jobs:
         run: |
           mkdir -p ${{ inputs.allure_result_folder }}
           sudo chmod -R 777 $(pwd)/${{ inputs.allure_result_folder }}
-          sudo chmod -R 777 $(pwd)/app
+          sudo chmod -R 777 $(pwd)
           docker run -i -u 1000 -v $(pwd)/${{ inputs.allure_result_folder }}:${HOME}/app/allure-results -v $(pwd)/main_app:${HOME}/app/main_app ${{ inputs.tag_name }} python3 -m pytest ${HOME}/app/main_app --alluredir=${HOME}/app/allure-results/ no:warnings 
       - name: Upload artifact
         continue-on-error: true
