@@ -1,0 +1,91 @@
+name: Run tests in docker
+on:
+  workflow_call:
+    inputs:
+      tag_name:
+        description: 'Name of tag'
+        required: true
+        type: string
+      dockerfile:
+        description: 'Path to the Dockerfile'
+        required: true
+        type: string
+      allure_result_folder:
+        description: 'Allure result folder for intel'
+        required: true
+        type: string
+
+jobs:
+  run-tests:
+    strategy:
+      fail-fast: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Build Docker Image
+        run: |
+          docker build -f ${{ inputs.dockerfile }} -t ${{ inputs.tagname }} .
+      - name: Install Allure command-line tool
+        continue-on-error: true
+        run: |
+          wget https://github.com/allure-framework/allure2/releases/download/2.32.0/allure_2.32.0-1_all.deb
+          sudo dpkg -i allure_2.32.0-1_all.deb
+      - name: Run pytest in docker container
+        continue-on-error: true
+        run: |
+          mkdir -p ${{ allure_result_folder }}
+          sudo chmod -R 777 $(pwd)/${{ allure_result_folder }}
+          docker run -i -u 1000 -v $(pwd)/${{ allure_result_folder }}:/home/user_a/app/allure-results ${{ inputs.tagname }} pipenv run pytest ./main_app --alluredir=/home/user_a/app/allure-results/ -v -p no:warnings 
+      - name: Upload artifact
+        continue-on-error: true
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: ${{ allure_result_folder }}
+          path: ${{ allure_result_folder }}
+  generate-report:
+    needs: run-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository branch gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+      - name: Import artifacts from test run
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ allure_result_folder }}
+          path: ${{ allure_result_folder }}
+      - name: Untar the artifact contents 
+        run: |
+          tar -xf ${{ allure_result_folder }}/artifact.tar -C ${{ allure_result_folder }}/
+          rm ${{ allure_result_folder }}/artifact.tar
+      - name: Install Allure for second job
+        run: |
+          wget https://github.com/allure-framework/allure2/releases/download/2.32.0/allure_2.32.0-1_all.deb
+          sudo dpkg -i allure_2.32.0-1_all.deb
+      - name: Generate Allure reports
+        continue-on-error: true
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          MY_EMAIL: ${{ secrets.MY_EMAIL }}
+          MY_USERNAME: ${{ secrets.MY_USERNAME }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_ed25519
+          export PATH="$PATH:$(pwd)/allure-2.15.0/bin"
+          allure generate current-allure-results -o allure-report
+          cp -r allure-report/* .
+          rm -rf allure-report
+          rm -rf current-allure-results
+          git config --global user.email "$MY_EMAIL"
+          git config --global user.name "$MY_USERNAME"
+          git remote -v
+          git remote set-url origin git@github.com:szeplakib/devops_alapok.git
+          git checkout gh-pages
+          git add .
+          git commit -m "Adding allure reports"
+          git push origin gh-pages
