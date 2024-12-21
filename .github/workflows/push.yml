@@ -39,7 +39,7 @@ jobs:
 
       - name: Build and Push Container
         run: |-
-          docker build -t "${{ env.AR_URL }}/flask_main:${{ github.sha }}" ./Dockerfile_main
-          docker build -t "${{ env.AR_URL }}/flask_micro:${{ github.sha }}" ./Dockerfile_micro
+          docker build -t "${{ env.AR_URL }}/flask_main:${{ github.sha }}" -f Dockerfile_main .
+          docker build -t "${{ env.AR_URL }}/flask_micro:${{ github.sha }}" -f Dockerfile_micro .
           docker push "${{ env.AR_URL }}/flask_main:${{ github.sha }}"
           docker push "${{ env.AR_URL }}/flask_micro:${{ github.sha }}"
