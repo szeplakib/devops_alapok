@@ -47,10 +47,10 @@ jobs:
     needs: run-tests
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository branch gh-pages
+      - name: Checkout Repository branch github-pages
         uses: actions/checkout@v4
         with:
-          ref: gh-pages
+          ref: github-pages
       - name: Import artifacts from test run
         uses: actions/download-artifact@v4
         with:
@@ -85,7 +85,7 @@ jobs:
           git config --global user.name "$MY_USERNAME"
           git remote -v
           git remote set-url origin git@github.com:szeplakib/devops_alapok.git
-          git checkout gh-pages
+          git checkout github-pages
           git add .
           git commit -m "Adding allure reports"
-          git push origin gh-pages
+          git push origin github-pages
