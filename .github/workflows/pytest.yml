@@ -29,6 +29,8 @@ jobs:
       - name: Install Allure command-line tool
         continue-on-error: true
         run: |
+          sudo apt update
+          sudo apt install default-jre-headless
           wget https://github.com/allure-framework/allure2/releases/download/2.32.0/allure_2.32.0-1_all.deb
           sudo dpkg -i allure_2.32.0-1_all.deb
       - name: Run pytest in docker container
@@ -63,6 +65,8 @@ jobs:
           rm ${{ inputs.allure_result_folder }}/artifact.tar
       - name: Install Allure for second job
         run: |
+          sudo apt update
+          sudo apt install default-jre-headless
           wget https://github.com/allure-framework/allure2/releases/download/2.32.0/allure_2.32.0-1_all.deb
           sudo dpkg -i allure_2.32.0-1_all.deb
       - name: Generate Allure reports
