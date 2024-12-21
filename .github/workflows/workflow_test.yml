@@ -1,9 +1,6 @@
 name: Run tests with allure on push
-on: 
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+on: [workflow_call]
+
 
 jobs:
   create-docker-build:
