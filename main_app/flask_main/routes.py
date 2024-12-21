@@ -15,12 +15,12 @@ def square(number):
     return f"{number ** 2:g}"
 
 
-@routes.route("/complex")
-async def complex():
-    data = requests.get(url = 'http://172.32.0.3:5000/complex')
+@routes.route("/complex_task")
+async def complex_task():
+    data = requests.get(url = 'http://172.32.0.3:5000/complex_task')
     return data.text
 
-@routes.route("/complex2")
-async def complex2():
-    data = requests.get(url = 'http://172.32.0.3:5000/complex2')
+@routes.route("/complex_task2")
+async def complex_task2():
+    data = requests.get(url = 'http://172.32.0.3:5000/complex_task2')
     return data.text
