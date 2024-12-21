@@ -1,0 +1,44 @@
+name: Push to Artifact Registry
+
+on: [workflow_call]
+
+env:
+  IMAGE_NAME: 'docker-test'
+  PROJECT_ID: 'devops-alapok'
+  AR_REPO_LOCATION: 'europe-central2'
+  AR_URL: 'europe-central2-docker.pkg.dev/devops-alapok/devops-alapok-repo'
+  SERVICE_ACCOUNT: 'githubactions@devops-alapok.iam.gserviceaccount.com' 
+  WORKLOAD_IDENTITY_PROVIDER: 'projects/561662876982/locations/global/workloadIdentityPools/devops-alapok-identity-pool/providers/github-actions-provider-test'
+
+jobs:
+  push_to_ar:
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Google Auth
+        id: auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          token_format: 'access_token'
+          project_id: ${{ env.PROJECT_ID }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Docker Auth
+        id: docker-auth
+        uses: 'docker/login-action@v3'
+        with:
+          username: 'oauth2accesstoken'
+          password: '${{ steps.auth.outputs.access_token }}'
+          registry: '${{ env.AR_REPO_LOCATION }}-docker.pkg.dev'
+
+      - name: Build and Push Container
+        run: |-
+          docker compose build
+          docker compose push

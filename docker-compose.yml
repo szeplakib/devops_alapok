@@ -2,7 +2,7 @@ services:
   flask_main:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile_main
     # stdin_open: true
     # tty: true
     networks:
@@ -10,21 +10,19 @@ services:
         ipv4_address: 172.32.0.2
     ports:
       - "8000:5000"
-    volumes:
-      - ./main_app:/app
+    # volumes:
+    #   - ./main_app:/app
     command: flask --app /app/flask_main run --debug --host=0.0.0.0
 
   flask_micro:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile_micro
     networks:
       local:
         ipv4_address: 172.32.0.3
     # stdin_open: true
     # tty: true
-    volumes:
-      - ./micro_app:/app
     command: flask --app /app/flask_micro run --host=172.32.0.3
 
 networks:
